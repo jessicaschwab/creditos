@@ -95,16 +95,33 @@ public class PrestamoManager {
      * @return
      */
     public List<Prestamo> buscarTodos() {
-
+      
         Session session = sessionFactory.openSession();
-
         /// NUNCA HARCODEAR SQLs nativos en la aplicacion.
         // ESTO es solo para nivel educativo
-        Query query = session.createNativeQuery("SELECT * FROM prestamo", Prestamo.class);
+        Query query = session.createNativeQuery("SELECT * FROM prestamo"+ Prestamo.class);
         List<Prestamo> todos = query.getResultList();
 
         return todos;
 
     }
+
+   
+    public List<Prestamo> buscarPorDni(int dni)  {
+      
+        Session session = sessionFactory.openSession();
+        // SQL Injection vulnerability exposed.
+        // Deberia traer solo aquella del nombre y con esto demostrarmos que trae todas
+        // si pasamos
+        // como nombre: "' or '1'='1"
+        //Query query = session.createNativeQuery("SELECT * FROM cliente where cliente id  = '" + dni.getClienteId()
+        //+ "'", Prestamo.class);
+        Query query=session.createQuery(" SELECT p FROM Prestamo p WHERE p.cliente.dni=:dni");
+        query.setParameter("dni", dni);
+        List<Prestamo> prestamos= query.getResultList();
+        return prestamos;
+
+    }
+
 
 }

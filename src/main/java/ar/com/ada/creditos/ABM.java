@@ -1,6 +1,8 @@
 package ar.com.ada.creditos;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -67,7 +69,11 @@ public class ABM {
                         break;
 
                     case 7:
-                       // listarPrestamo();
+                        try {
+                            listarPrestamo();
+                        } catch (ClienteDNIException exdni) {
+                            System.out.println("Error en el DNI. Indique uno valido");
+                        }
                         break;
 
                     default:
@@ -168,10 +174,16 @@ public class ABM {
         System.out.println("Ingrese el monto a prestar");
         p.setImporte(Teclado.nextBigDecimal());
         p.setCliente(clienteEncontrado);
-        System.out.println("iNGRESE LA FECHA DE PRESTAMO");
-        String time=Teclado.next();
-        LocalDate lt=LocalDate.parse(time);
-        Date fechaAlta= lt.atStartOfDay(ZoneId.systemDefault()));
+        System.out.println("Ingrese fecha prestamo");
+        Date date = null;
+        DateFormat df = new SimpleDateFormat("dd/mm/yy");
+        try {
+            date = df.parse(Teclado.nextLine());
+            p.setFecha(date);
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+
         System.out.println("INGRESE LA CANTIDAD DE CUOTAS");    
         p.setCuotas(Teclado.nextInt());   
         p.setFechaAlta(new Date());
@@ -286,6 +298,29 @@ public class ABM {
 
         if (cliente.getDomicilioAlternativo() != null)
             System.out.println(" Alternativo: " + cliente.getDomicilioAlternativo());
+        else
+            System.out.println();
+    }
+
+    public void listarPrestamo()  throws Exception{
+        
+        System.out.println("Ingrese el dni del cliente ");
+        String dni = Teclado.next();
+        Cliente clienteEncontradoDNI = ABMCliente.readByDNI(dni);
+    
+        List<Prestamo> prestamos = ABMPrestamo.buscarPorDni(clienteEncontradoDNI.getDni());
+        for (Prestamo p : prestamos) {
+            mostrarPrestamo(p);
+        }
+    }
+
+    public void mostrarPrestamo(Prestamo prestamo) {
+
+        System.out.print("Id: " + prestamo.getPrestamoId() + " Nombre: " + prestamo.getCliente().getNombre() + " DNI: "
+                + prestamo.getCliente().getDni() + " Domicilio: " + prestamo.getCliente().getDomicilio());
+
+        if (prestamo.getCliente().getDomicilioAlternativo() != null)
+            System.out.println(" Alternativo: " + prestamo.getCliente().getDomicilioAlternativo());
         else
             System.out.println();
     }
