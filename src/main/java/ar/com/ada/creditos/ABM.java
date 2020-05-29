@@ -174,6 +174,9 @@ public class ABM {
         System.out.println("Ingrese el monto a prestar");
         p.setImporte(Teclado.nextBigDecimal());
         p.setCliente(clienteEncontrado);
+        System.out.println("INGRESE LA CANTIDAD DE CUOTAS");    
+        p.setCuotas(Teclado.nextInt());  
+        Teclado.nextLine();
         System.out.println("Ingrese fecha prestamo");
         Date date = null;
         DateFormat df = new SimpleDateFormat("dd/mm/yy");
@@ -184,11 +187,11 @@ public class ABM {
             System.out.println(ex);
         }
 
-        System.out.println("INGRESE LA CANTIDAD DE CUOTAS");    
-        p.setCuotas(Teclado.nextInt());   
+         
         p.setFechaAlta(new Date());
-        
-        System.out.println("Se ha cargado "+clienteEncontrado.getPrestamos()+ "monto al DNI"+clienteEncontrado.getDni());
+        ABMPrestamo.create(p);
+
+        //System.out.println("Se ha cargado "+clienteEncontrado.getPrestamos()+ "monto al DNI"+clienteEncontrado.getDni());
   
   
       }
